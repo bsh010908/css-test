@@ -6,7 +6,7 @@
     
     p {
         text-align: center;
-        color: blue;
+        color: rgb(32, 22, 22);
         font-style: italic;
         background-color: rgb(135, 121, 167)
     }
@@ -16,7 +16,7 @@
         color: white;
     }
     .bg{
-        background-color: yellow;
+        background-color: rgb(35, 94, 104);
         padding: 20px;
     }
     bg1{

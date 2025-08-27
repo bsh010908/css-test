@@ -1,18 +1,49 @@
-<html>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="/css/reset.css">
-<link rel="stylesheet" href="/css/style.css">
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>TUI Grid Example</title>
+    <!-- TUI Grid CSS -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+</head>
 <body>
-    <h1><i class="fas fa-home"></i> Solid 홈 아이콘</h1>
-    <h1><i class="far fa-envelope"></i> Regular 메일 아이콘</h1>
-    <h1><i class="fab fa-github"></i> GitHub 아이콘</h1>
-    <p id="container1" class="bg1 bg" style="color:red;">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
-        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
-        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-    </p>
-    <p id="container2"> Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    <h1>TUI Grid 연습</h1>
+    <div id="grid" style="margin:20px;"></div>
+
+    <!-- TUI Grid JS -->
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <script>
+        // 기존에 말씀하신 10개 항목 그대로
+        const mockData = [
+            { id: 1, name: '홍길동', age: 15, city: '서울' },
+            { id: 2, name: '김철수', age: 45, city: '부산' },
+            { id: 3, name: '이영희', age: 78, city: '대구' },
+            { id: 4, name: '박영수', age: 42, city: '인천' },
+            { id: 5, name: '최민호', age: 39, city: '광주' },
+            { id: 6, name: '젠이츠', age: 18, city: '서울' },
+            { id: 7, name: '네즈코', age: 13, city: '부산' },
+            { id: 8, name: '탄지로', age: 17, city: '대구' },
+            { id: 9, name: '무이치로', age: 14, city: '인천' },
+            { id: 10, name: '이노스케', age: 16, city: '광주' }
+        ];
+
+        // Grid 생성
+        const grid = new tui.Grid({
+            el: document.getElementById('grid'),
+            scrollX: false,
+            scrollY: false,
+            rowHeaders: ['rowNum'], // 행 번호 표시
+            columns: [
+                { header: 'ID', name: 'id' },
+                { header: '이름', name: 'name', sortable: true },
+                { header: '나이', name: 'age', sortable: true },
+                { header: '도시', name: 'city' }
+            ],
+            data: mockData
+        });
+
+        // 초기 정렬: 이름 기준 가나다순
+        grid.sort('name', 'asc', true);
+    </script>
 </body>
 </html>
