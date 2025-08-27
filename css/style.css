@@ -1,10 +1,42 @@
- 
+ @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+/* 2. Pretendard (CDN) */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable.css');
+    
+    
     p {
         text-align: center;
         color: blue;
         font-style: italic;
+        background-color: rgb(167, 147, 121)
     }
     h1{
         padding:10px;
-        background-color: #9b0b0b;
+        background-color: #bff097;
+        color: white;
     }
+    .bg{
+        background-color: yellow;
+        padding: 20px;
+    }
+    bg1{
+        background-color: green;
+        padding: 20px;
+        }
+         #container1{
+            width: 500px;
+            margin: 10px auto;
+            border: 1px solid black;
+            padding: 20px;
+        }
+        
+              #container2{
+            width: 500px;
+            margin: 10px auto;
+            border: 1px solid rgb(255, 0, 0);
+            padding: 20px;
+        }
+body {
+ font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+}
+        
