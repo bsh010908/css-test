@@ -11,7 +11,7 @@
       background: #F9FAFB;
       color: #333;
     }
-    h1 {
+    h1 { 
       text-align: center;
       margin-bottom: 20px;
     }
@@ -22,66 +22,104 @@
       border: 1px solid #1791DD;
       border-radius: 6px;
       background: white;
-      overflow: hidden;
     }
     /* 각 셀 */
     .time, .task {
       padding: 12px;
       border-bottom: 1px solid #ddd;
     }
-    /* 시간대 스타일 */
     .time {
       background: #F1F5F9;
       font-weight: bold;
       text-align: center;
       border-right: 1px solid #ddd;
     }
-    /* 할 일 */
     .task {
       background: #fff;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      cursor: grab;
     }
     .task:hover {
       background: #E0F2FE;
       transform: scale(1.02);
     }
-    /* 긴 작업 → grid-column 확장 */
     .task.full {
-      grid-column: 1 / -1; /* 좌측+우측 전체 차지 */
+      grid-column: 1 / -1;
       text-align: center;
       font-weight: bold;
       background: #FEF3C7;
+      cursor: grab;
+    }
+    .dragging {
+      opacity: 0.5;
     }
   </style>
 </head>
 <body>
-  <h1>:자명종_시계: 시간대별 To-Do List</h1>
-  <div class="todo-schedule">
+  <h1>⏰ 시간대별 To-Do List</h1>
+  <div class="todo-schedule" id="todo">
     <!-- 아침 -->
     <div class="time">08:00</div>
-    <div class="task">출근 / 이메일 확인</div>
+    <div class="task" draggable="true">출근 / 이메일 확인</div>
     <div class="time">09:00</div>
-    <div class="task">팀 미팅</div>
+    <div class="task" draggable="true">팀 미팅</div>
     <div class="time">10:00</div>
-    <div class="task">API 기능 개발</div>
+    <div class="task" draggable="true">API 기능 개발</div>
     <div class="time">11:00</div>
-    <div class="task">코드 리뷰</div>
+    <div class="task" draggable="true">코드 리뷰</div>
     <!-- 점심 -->
     <div class="time">12:00</div>
-    <div class="task">:포크와_나이프: 점심 식사</div>
+    <div class="task" draggable="true">🍴 점심 식사</div>
     <!-- 오후 -->
     <div class="time">13:00</div>
-    <div class="task">DB 마이그레이션 준비</div>
+    <div class="task" draggable="true">DB 마이그레이션 준비</div>
     <div class="time">14:00</div>
-    <div class="task">프론트엔드 버그 수정</div>
+    <div class="task" draggable="true">프론트엔드 버그 수정</div>
     <div class="time">15:00</div>
-    <div class="task">디자인팀 협업 미팅</div>
+    <div class="task" draggable="true">디자인팀 협업 미팅</div>
     <div class="time">16:00</div>
-    <div class="task">테스트 코드 작성</div>
+    <div class="task" draggable="true">테스트 코드 작성</div>
     <div class="time">17:00</div>
-    <div class="task">보고서 정리</div>
+    <div class="task" draggable="true">보고서 정리</div>
     <!-- 전체 span -->
-    <div class="task full">:압정: 오늘 18시 퇴근 후 운동</div>
+    <div class="task full" draggable="true">📌 오늘 18시 퇴근 후 운동</div>
   </div>
+
+  <script>
+    const todo = document.getElementById("todo");
+    let dragging;
+
+    // 드래그 시작
+    todo.addEventListener("dragstart", e => {
+      if (e.target.classList.contains("task")) {
+        dragging = e.target;
+        e.target.classList.add("dragging");
+      }
+    });
+
+    // 드래그 종료
+    todo.addEventListener("dragend", e => {
+      if (dragging) {
+        dragging.classList.remove("dragging");
+        dragging = null;
+      }
+    });
+
+    // 드래그 오버
+    todo.addEventListener("dragover", e => {
+      e.preventDefault();
+      // task만 이동
+      const tasks = [...todo.querySelectorAll(".task:not(.dragging)")];
+      const afterElement = tasks.find(task => {
+        const box = task.getBoundingClientRect();
+        return e.clientY < box.top + box.height / 2;
+      });
+      if (!afterElement) {
+        todo.appendChild(dragging);
+      } else {
+        todo.insertBefore(dragging, afterElement);
+      }
+    });
+  </script>
 </body>
 </html>
