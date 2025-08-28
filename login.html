@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시판 글쓰기</title>
+    <style>
+        /* 기존 CSS 그대로 */
+        #sigup input[type="text"],
+        #sigup input[type="submit"] {
+            border: 1px solid #090000;
+            border-radius: 3px;
+        }
+        
+        #sigup input[required] {
+            border: 1px solid #ff0000;
+            border-radius: 3px;
+        }
+
+        /* 네이버 버튼 스타일 */
+        #naverBtn {
+            padding: 10px 20px;
+            background-color: #03c75a;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        #naverBtn.clicked {
+            background-color: #026632; /* 클릭 후 색상 변경 */
+        }
+    </style>
+</head>
+<body style="padding: 200px;">
+    <div>
+        <form id="sigup" name="signup">
+            아이디: <input type="text" id="userid" name="userid"><br>
+            비번 : <input type="password" id="userpw" name="userpw"><br>
+            연락처: <input type="tel" id="usertel" name="usertel"><br>
+
+            <input type="submit" value="저장">
+        </form>
+
+        <!-- 네이버 버튼 추가 -->
+        <button id="naverBtn">네이버로 이동</button>
+    </div>
+
+    <script>
+        const naverBtn = document.getElementById('naverBtn');
+
+        naverBtn.addEventListener('click', function() {
+            // 색 변경
+            naverBtn.classList.add('clicked');
+            // 새 창으로 네이버 이동
+            window.open('https://www.naver.com', '_blank');
+        });
+    </script>
+</body>
+</html>
