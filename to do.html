@@ -1,125 +1,130 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>시간대별 To-Do List</title>
-  <style>
-    body {
-      font-family: "Pretendard", "Noto Sans KR", sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: #F9FAFB;
-      color: #333;
-    }
-    h1 { 
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    /* 메인 그리드 */
-    .todo-schedule {
-      display: grid;
-      grid-template-columns: 100px 1fr; /* 좌측 시간대 / 우측 할 일 */
-      border: 1px solid #1791DD;
-      border-radius: 6px;
-      background: white;
-    }
-    /* 각 셀 */
-    .time, .task {
-      padding: 12px;
-      border-bottom: 1px solid #ddd;
-    }
-    .time {
-      background: #F1F5F9;
-      font-weight: bold;
-      text-align: center;
-      border-right: 1px solid #ddd;
-    }
-    .task {
-      background: #fff;
-      transition: all 0.2s ease;
-      cursor: grab;
-    }
-    .task:hover {
-      background: #E0F2FE;
-      transform: scale(1.02);
-    }
-    .task.full {
-      grid-column: 1 / -1;
-      text-align: center;
-      font-weight: bold;
-      background: #FEF3C7;
-      cursor: grab;
-    }
-    .dragging {
-      opacity: 0.5;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>시간대별 To-Do List (드래그 가능)</title>
+<style>
+  body {
+    font-family: "Pretendard", "Noto Sans KR", sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: #F9FAFB;
+    color: #333;
+  }
+  h1 { text-align: center; margin-bottom: 20px; }
+
+  .todo-schedule {
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .time-section {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    border: 1px solid #1791DD;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+
+  .time {
+    background: #F1F5F9;
+    font-weight: bold;
+    text-align: center;
+    border-right: 1px solid #ddd;
+    padding: 12px;
+  }
+
+  .task {
+    background: #fff;
+    padding: 12px;
+    cursor: grab;
+    transition: all 0.2s ease;
+  }
+
+  .task:hover { background: #E0F2FE; transform: scale(1.02); }
+  .task.full { grid-column: 1 / -1; background: #FEF3C7; text-align: center; font-weight: bold; }
+
+  .dragging { opacity: 0.5; }
+</style>
 </head>
 <body>
-  <h1>⏰ 시간대별 To-Do List</h1>
-  <div class="todo-schedule" id="todo">
-    <!-- 아침 -->
+
+<h1>⏰ 시간대별 To-Do List</h1>
+
+<div class="todo-schedule" id="todo">
+
+  <div class="time-section" data-time="08:00">
     <div class="time">08:00</div>
     <div class="task" draggable="true">출근 / 이메일 확인</div>
-    <div class="time">09:00</div>
-    <div class="task" draggable="true">팀 미팅</div>
-    <div class="time">10:00</div>
-    <div class="task" draggable="true">API 기능 개발</div>
-    <div class="time">11:00</div>
-    <div class="task" draggable="true">코드 리뷰</div>
-    <!-- 점심 -->
-    <div class="time">12:00</div>
-    <div class="task" draggable="true">🍴 점심 식사</div>
-    <!-- 오후 -->
-    <div class="time">13:00</div>
-    <div class="task" draggable="true">DB 마이그레이션 준비</div>
-    <div class="time">14:00</div>
-    <div class="task" draggable="true">프론트엔드 버그 수정</div>
-    <div class="time">15:00</div>
-    <div class="task" draggable="true">디자인팀 협업 미팅</div>
-    <div class="time">16:00</div>
-    <div class="task" draggable="true">테스트 코드 작성</div>
-    <div class="time">17:00</div>
-    <div class="task" draggable="true">보고서 정리</div>
-    <!-- 전체 span -->
-    <div class="task full" draggable="true">📌 오늘 18시 퇴근 후 운동</div>
   </div>
 
-  <script>
-    const todo = document.getElementById("todo");
-    let dragging;
+  <div class="time-section" data-time="09:00">
+    <div class="time">09:00</div>
+    <div class="task" draggable="true">팀 미팅</div>
+  </div>
 
-    // 드래그 시작
-    todo.addEventListener("dragstart", e => {
-      if (e.target.classList.contains("task")) {
-        dragging = e.target;
-        e.target.classList.add("dragging");
-      }
-    });
+  <div class="time-section" data-time="10:00">
+    <div class="time">10:00</div>
+    <div class="task" draggable="true">API 기능 개발</div>
+  </div>
 
-    // 드래그 종료
-    todo.addEventListener("dragend", e => {
-      if (dragging) {
-        dragging.classList.remove("dragging");
-        dragging = null;
-      }
-    });
+  <div class="time-section" data-time="11:00">
+    <div class="time">11:00</div>
+    <div class="task" draggable="true">코드 리뷰</div>
+  </div>
 
-    // 드래그 오버
-    todo.addEventListener("dragover", e => {
-      e.preventDefault();
-      // task만 이동
-      const tasks = [...todo.querySelectorAll(".task:not(.dragging)")];
-      const afterElement = tasks.find(task => {
-        const box = task.getBoundingClientRect();
-        return e.clientY < box.top + box.height / 2;
-      });
-      if (!afterElement) {
-        todo.appendChild(dragging);
-      } else {
-        todo.insertBefore(dragging, afterElement);
-      }
+  <div class="time-section" data-time="12:00">
+    <div class="time">12:00</div>
+    <div class="task" draggable="true">🍴 점심 식사</div>
+  </div>
+
+</div>
+
+<script>
+const todo = document.getElementById("todo");
+let dragging = null;
+
+// 드래그 시작
+todo.addEventListener("dragstart", e => {
+  if (e.target.classList.contains("task")) {
+    dragging = e.target;
+    e.target.classList.add("dragging");
+  }
+});
+
+// 드래그 종료
+todo.addEventListener("dragend", e => {
+  if (dragging) {
+    dragging.classList.remove("dragging");
+    dragging = null;
+  }
+});
+
+// 드래그 오버
+todo.addEventListener("dragover", e => {
+  e.preventDefault();
+  // 가장 가까운 time-section 선택
+  const sections = [...todo.querySelectorAll(".time-section")];
+  const section = sections.find(sec => {
+    const rect = sec.getBoundingClientRect();
+    return e.clientY > rect.top && e.clientY < rect.bottom;
+  });
+  if (section) {
+    // 마우스 위치 기준으로 task 위치 결정
+    const tasks = [...section.querySelectorAll(".task:not(.dragging)")];
+    const afterElement = tasks.find(t => {
+      const box = t.getBoundingClientRect();
+      return e.clientY < box.top + box.height / 2;
     });
-  </script>
+    if (!afterElement) {
+      section.appendChild(dragging);
+    } else {
+      section.insertBefore(dragging, afterElement);
+    }
+  }
+});
+</script>
+
 </body>
 </html>
