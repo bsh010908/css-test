@@ -1,130 +1,131 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<title>시간대별 To-Do List (드래그 가능)</title>
-<style>
-  body {
-    font-family: "Pretendard", "Noto Sans KR", sans-serif;
-    margin: 0;
-    padding: 20px;
-    background: #F9FAFB;
-    color: #333;
-  }
-  h1 { text-align: center; margin-bottom: 20px; }
-
-  .todo-schedule {
-    max-width: 500px;
-    margin: 0 auto;
-  }
-
-  .time-section {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    border: 1px solid #1791DD;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    overflow: hidden;
-  }
-
-  .time {
-    background: #F1F5F9;
-    font-weight: bold;
-    text-align: center;
-    border-right: 1px solid #ddd;
-    padding: 12px;
-  }
-
-  .task {
-    background: #fff;
-    padding: 12px;
-    cursor: grab;
-    transition: all 0.2s ease;
-  }
-
-  .task:hover { background: #E0F2FE; transform: scale(1.02); }
-  .task.full { grid-column: 1 / -1; background: #FEF3C7; text-align: center; font-weight: bold; }
-
-  .dragging { opacity: 0.5; }
-</style>
+  <meta charset="UTF-8">
+  <title>드래그 앤드 드롭 To-Do List</title>
+  <style>
+    body {
+      font-family: "Pretendard", "Noto Sans KR", sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: #F9FAFB;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .todo-list {
+      max-width: 500px;
+      margin: 0 auto;
+      background: white;
+      border: 1px solid #1791DD;
+      border-radius: 6px;
+      padding: 16px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .task {
+      padding: 12px;
+      margin: 8px 0;
+      background: #F1F5F9;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      cursor: grab;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .task:active {
+      cursor: grabbing;
+    }
+    .task:hover {
+      background: #E0F2FE;
+      transform: scale(1.02);
+    }
+    /* 드래그 오버 시 강조 */
+    .drag-over {
+      border: 2px dashed #1791DD;
+      background: #FEFCE8;
+    }
+  </style>
 </head>
 <body>
-
-<h1>⏰ 시간대별 To-Do List</h1>
-
-<div class="todo-schedule" id="todo">
-
-  <div class="time-section" data-time="08:00">
-    <div class="time">08:00</div>
-    <div class="task" draggable="true">출근 / 이메일 확인</div>
+  <h1>:메모: 드래그 앤드 드롭 To-Do List</h1>
+  <div class="todo-list" id="todoList">
+    <!-- JS에서 로드됨 -->
   </div>
-
-  <div class="time-section" data-time="09:00">
-    <div class="time">09:00</div>
-    <div class="task" draggable="true">팀 미팅</div>
-  </div>
-
-  <div class="time-section" data-time="10:00">
-    <div class="time">10:00</div>
-    <div class="task" draggable="true">API 기능 개발</div>
-  </div>
-
-  <div class="time-section" data-time="11:00">
-    <div class="time">11:00</div>
-    <div class="task" draggable="true">코드 리뷰</div>
-  </div>
-
-  <div class="time-section" data-time="12:00">
-    <div class="time">12:00</div>
-    <div class="task" draggable="true">🍴 점심 식사</div>
-  </div>
-
-</div>
-
-<script>
-const todo = document.getElementById("todo");
-let dragging = null;
-
-// 드래그 시작
-todo.addEventListener("dragstart", e => {
-  if (e.target.classList.contains("task")) {
-    dragging = e.target;
-    e.target.classList.add("dragging");
-  }
-});
-
-// 드래그 종료
-todo.addEventListener("dragend", e => {
-  if (dragging) {
-    dragging.classList.remove("dragging");
-    dragging = null;
-  }
-});
-
-// 드래그 오버
-todo.addEventListener("dragover", e => {
-  e.preventDefault();
-  // 가장 가까운 time-section 선택
-  const sections = [...todo.querySelectorAll(".time-section")];
-  const section = sections.find(sec => {
-    const rect = sec.getBoundingClientRect();
-    return e.clientY > rect.top && e.clientY < rect.bottom;
-  });
-  if (section) {
-    // 마우스 위치 기준으로 task 위치 결정
-    const tasks = [...section.querySelectorAll(".task:not(.dragging)")];
-    const afterElement = tasks.find(t => {
-      const box = t.getBoundingClientRect();
-      return e.clientY < box.top + box.height / 2;
-    });
-    if (!afterElement) {
-      section.appendChild(dragging);
-    } else {
-      section.insertBefore(dragging, afterElement);
+  <script>
+    const todoList = document.getElementById("todoList");
+    let draggedItem = null;
+    // 기본 데이터
+    const defaultTasks = [
+      "출근 / 이메일 확인",
+      "팀 미팅",
+      "API 기능 개발",
+      "코드 리뷰",
+      ":포크와_나이프: 점심 식사",
+      "DB 마이그레이션 준비",
+      "프론트엔드 버그 수정",
+      "디자인팀 협업 미팅",
+      "테스트 코드 작성",
+      "보고서 정리",
+      ":압정: 오늘 18시 퇴근 후 운동"
+    ];
+    // localStorage에서 불러오기
+    function loadTasks() {
+      const saved = localStorage.getItem("todoList");
+      return saved ? JSON.parse(saved) : defaultTasks;
     }
-  }
-});
-</script>
-
+    // localStorage에 저장
+    function saveTasks() {
+      const tasks = [...todoList.querySelectorAll(".task")].map(el => el.textContent);
+      localStorage.setItem("todoList", JSON.stringify(tasks));
+    }
+    // 리스트 렌더링
+    function renderTasks(tasks) {
+      todoList.innerHTML = "";
+      tasks.forEach(taskText => {
+        const taskEl = document.createElement("div");
+        taskEl.className = "task";
+        taskEl.draggable = true;
+        taskEl.textContent = taskText;
+        todoList.appendChild(taskEl);
+      });
+    }
+    // 초기화
+    renderTasks(loadTasks());
+    // 이벤트 바인딩 (이벤트 위임)
+    todoList.addEventListener("dragstart", (e) => {
+      if (e.target.classList.contains("task")) {
+        draggedItem = e.target;
+        e.target.style.opacity = "0.5";
+      }
+    });
+    todoList.addEventListener("dragend", (e) => {
+      if (e.target.classList.contains("task")) {
+        draggedItem = null;
+        e.target.style.opacity = "1";
+        saveTasks(); // dragend 시 저장
+      }
+    });
+    todoList.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      const target = e.target;
+      if (target && target !== draggedItem && target.classList.contains("task")) {
+        target.classList.add("drag-over");
+      }
+    });
+    todoList.addEventListener("dragleave", (e) => {
+      if (e.target.classList.contains("task")) {
+        e.target.classList.remove("drag-over");
+      }
+    });
+    todoList.addEventListener("drop", (e) => {
+      e.preventDefault();
+      const target = e.target;
+      if (target && target !== draggedItem && target.classList.contains("task")) {
+        target.classList.remove("drag-over");
+        todoList.insertBefore(draggedItem, target);
+      }
+    });
+  </script>
 </body>
 </html>
